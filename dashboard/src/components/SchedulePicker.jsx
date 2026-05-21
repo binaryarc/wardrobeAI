@@ -18,7 +18,7 @@ export default function SchedulePicker({ schedule, onChange }) {
           <button
             key={p.cron}
             type="button"
-            onClick={() => p.cron !== 'custom' && onChange(p.cron)}
+            onClick={() => p.cron === 'custom' ? onChange('') : onChange(p.cron)}
             style={{
               padding: '6px 14px', borderRadius: 20, fontSize: 13, cursor: 'pointer',
               background: schedule === p.cron ? '#6366f1' : '#f3f4f6',
