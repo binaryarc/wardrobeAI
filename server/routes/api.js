@@ -69,4 +69,4 @@ router.post('/run', async (req, res) => {
   executeRecommendation();
 });
 
-export { router, executeRecommendation, startScheduler };
+export { router, executeRecommendation };
