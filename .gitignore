@@ -17,7 +17,6 @@ dist/
 .pnp.js
 
 # 빌드 산출물
-dashboard/dist/
 *.tsbuildinfo
 
 # 로컬 설정 / 사용자 데이터
