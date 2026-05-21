@@ -1,12 +1,41 @@
+# 환경변수 / 시크릿
 .env
 .env.*
 config/secrets.yaml
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 .venv/
 venv/
+
+# Node.js
 node_modules/
-.DS_Store
+dist/
+.pnp
+.pnp.js
+
+# 빌드 산출물
+dashboard/dist/
+*.tsbuildinfo
+
+# 로컬 설정 / 사용자 데이터
+~/.wardrobeai/
 *.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude / AI 도구
+.claude/
+CLAUDE.md
 .superpowers/
+.codex/
