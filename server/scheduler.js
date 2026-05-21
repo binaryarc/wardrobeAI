@@ -16,8 +16,3 @@ export function stopScheduler() {
     currentTask = null;
   }
 }
-
-export function getNextRunTime(cronExpression) {
-  if (!cron.validate(cronExpression)) return null;
-  return null;
-}

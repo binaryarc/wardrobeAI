@@ -49,8 +49,10 @@ router.get('/config', (req, res) => {
 
 router.post('/config', (req, res) => {
   const current = loadConfig();
-  const updated = { ...current, ...req.body };
-  saveConfig(updated);
+  const sanitized = Object.fromEntries(
+    Object.entries(req.body).filter(([, v]) => v !== '***')
+  );
+  const updated = { ...current, ...sanitized };
   if (updated.schedule) {
     try {
       startScheduler(updated.schedule, executeRecommendation);
@@ -58,6 +60,7 @@ router.post('/config', (req, res) => {
       return res.status(400).json({ error: e.message });
     }
   }
+  saveConfig(updated);
   res.json({ ok: true });
 });
 
