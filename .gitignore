@@ -12,7 +12,7 @@ venv/
 
 # Node.js
 node_modules/
-dist/
+/dist/
 .pnp
 .pnp.js
 

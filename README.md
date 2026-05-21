@@ -1,51 +1,28 @@
 # wardrobeAI
 
-Notion 한 페이지에 사진·텍스트로 무작위로 저장해둔 옷들을 AI가 인식하고,
-날씨와 사용자가 원하는 스타일을 입력하면 데일리 코디를 추천해주는 서비스.
+노션 옷장 페이지를 읽어 날씨·스타일 기반 데일리 코디를 추천해주는 로컬 툴.
+추천 결과는 사용자의 노션 페이지에 직접 작성됩니다.
 
-## 흐름
+## 요구사항
 
-```
-Notion 페이지 (옷 사진 + 텍스트)
-        ↓  Notion API
-  옷장 DB 파싱 + AI 이미지 인식
-        ↓  Vision AI (GPT-4o / Claude)
-  아이템 카탈로그 (종류, 색상, 스타일 태그)
-        ↓
-  날씨 API + 사용자 스타일 입력
-        ↓
-  추천 엔진 → 데일리 코디 카드 출력
+- Node.js 18+
+- [Claude Code](https://claude.ai/code) 또는 [Codex CLI](https://platform.openai.com/docs/guides/code) 설치
+
+## 설치 및 실행
+
+```bash
+npx wardrobeai
 ```
 
-## 디렉토리 구조
+브라우저가 자동으로 열리며 설정 페이지로 이동합니다.
 
-```
-wardrobeAI/
-├── src/
-│   ├── notion/       # Notion API 연동, 페이지 파싱
-│   ├── ai/           # 이미지 인식, 아이템 태깅
-│   ├── weather/      # 날씨 API 연동
-│   └── recommender/  # 코디 추천 엔진
-├── config/           # 환경변수, API 키 설정
-├── docs/             # 기획, API 명세
-└── tests/            # 단위·통합 테스트
-```
+## 설정
 
-## 핵심 기능
+1. 노션 Integration Token 발급 (앱 내 가이드 참조)
+2. 옷장 노션 페이지 URL 입력
+3. 도시명, 선호 스타일, 스케줄 설정
+4. 저장 후 "지금 추천받기" 또는 스케줄 대기
 
-- **Notion 파서**: 페이지 내 이미지 URL, 텍스트 블록 자동 추출
-- **AI 아이템 인식**: 옷 사진 → 종류·색상·스타일 자동 태깅
-- **날씨 연동**: 오늘 날씨 기반 착용 가능 아이템 필터링
-- **스타일 매칭**: 사용자 입력 스타일(캐주얼, 포멀 등) + TPO 고려 추천
-- **데일리 코디 카드**: 상의 + 하의 + 아우터 + 신발 조합 출력
+## 크로스플랫폼
 
-## 기술 스택 (예정)
-
-| 레이어 | 기술 |
-|---|---|
-| Notion 연동 | Notion API v2 |
-| AI 인식 | Claude claude-sonnet-4-6 (Vision) |
-| 날씨 | OpenWeatherMap API |
-| 백엔드 | Python (FastAPI) |
-| 저장소 | SQLite → PostgreSQL |
-| 프론트 | 추후 결정 |
+Linux / macOS / Windows 모두 지원.
