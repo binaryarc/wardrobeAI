@@ -4,7 +4,7 @@ import { runRecommendation } from '../engine.js';
 import { startScheduler } from '../scheduler.js';
 
 const router = Router();
-const state = { lastRun: null, nextSchedule: null, logs: [], running: false };
+const state = { lastRun: null, logs: [], running: false };
 
 function addLog(level, message) {
   state.logs.unshift({ level, message, time: new Date().toISOString() });
