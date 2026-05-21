@@ -17,7 +17,7 @@ export default function Dashboard() {
     ]);
     setStatus(s);
     setLogs(l);
-    setScheduleEdit(s.schedule || '0 8 * * *');
+    setScheduleEdit(prev => prev === '' ? (s.schedule || '0 8 * * *') : prev);
   }, []);
 
   useEffect(() => { refresh(); const id = setInterval(refresh, 5000); return () => clearInterval(id); }, [refresh]);
