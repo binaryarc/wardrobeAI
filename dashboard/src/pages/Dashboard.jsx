@@ -24,8 +24,12 @@ export default function Dashboard() {
 
   async function handleRun() {
     setRunning(true);
-    await fetch('/api/run', { method: 'POST' });
-    setTimeout(() => { refresh(); setRunning(false); }, 1000);
+    try {
+      await fetch('/api/run', { method: 'POST' });
+      setTimeout(() => { refresh(); setRunning(false); }, 1000);
+    } catch {
+      setRunning(false);
+    }
   }
 
   async function handleScheduleSave() {
