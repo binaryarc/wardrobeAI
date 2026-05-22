@@ -12,7 +12,15 @@ export default function App() {
       .catch(() => setConfigured(false));
   }, []);
 
-  if (configured === null) return <div style={{ padding: 40 }}>로딩 중...</div>;
+  function handleReset() {
+    setConfigured(false);
+  }
+
+  if (configured === null) return (
+    <div style={{ minHeight: '100vh', background: '#03030a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.4)', fontFamily: 'system-ui' }}>
+      로딩 중...
+    </div>
+  );
   if (!configured) return <Setup onComplete={() => setConfigured(true)} />;
-  return <Dashboard />;
+  return <Dashboard onReset={handleReset} />;
 }
