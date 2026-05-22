@@ -1,12 +1,9 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { homedir } from 'node:os';
+import { getDataDir } from './config.js';
 
 function getDefaultCachePath() {
-  const base = process.platform === 'win32'
-    ? join(process.env.APPDATA || homedir(), 'wardrobeai')
-    : join(homedir(), '.wardrobeai');
-  return join(base, 'items-cache.json');
+  return join(getDataDir(), 'items-cache.json');
 }
 
 export function loadCache(cachePath = getDefaultCachePath()) {
@@ -23,7 +20,7 @@ export function saveCache(cache, cachePath = getDefaultCachePath()) {
   writeFileSync(cachePath, JSON.stringify(cache, null, 2), 'utf-8');
 }
 
-// Notion S3 이미지 URL은 만료 토큰이 붙어 매번 바뀌므로, query string 제거한 path를 키로 사용
+// Notion S3 이미지 URL은 만료 토큰이 붙어 매번 바뀌므로 query string 제거 후 path로 키 생성
 export function cacheKey(imageUrl) {
   if (!imageUrl) return '';
   try {

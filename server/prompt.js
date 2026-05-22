@@ -1,4 +1,7 @@
+import { CATEGORIES } from './notion/reader.js';
+
 const OUTER_TEMP_THRESHOLD = 18;
+const OTHER_CATEGORY = '기타';
 
 function formatItem(item) {
   const tagPart = item.tags?.length ? ` — ${item.tags.join(', ')}` : '';
@@ -10,17 +13,20 @@ export function shouldIncludeOuter(weather) {
   return weather.temperature <= OUTER_TEMP_THRESHOLD;
 }
 
+function groupByCategory(items) {
+  const categorySet = new Set(CATEGORIES);
+  const groups = Object.fromEntries(CATEGORIES.map(c => [c, []]));
+  groups[OTHER_CATEGORY] = [];
+  for (const item of items) {
+    const bucket = categorySet.has(item.category) ? item.category : OTHER_CATEGORY;
+    groups[bucket].push(item);
+  }
+  return groups;
+}
+
 export function buildPrompt(items, weather, { preferredStyles, excludeItems }) {
   const filtered = items.filter(item => !excludeItems.includes(item.name));
-
-  const grouped = {
-    상의: filtered.filter(i => i.category === '상의'),
-    하의: filtered.filter(i => i.category === '하의'),
-    아우터: filtered.filter(i => i.category === '아우터'),
-    신발: filtered.filter(i => i.category === '신발'),
-    액세서리: filtered.filter(i => i.category === '액세서리'),
-    기타: filtered.filter(i => !['상의', '하의', '아우터', '신발', '액세서리'].includes(i.category)),
-  };
+  const grouped = groupByCategory(filtered);
 
   const sections = Object.entries(grouped)
     .filter(([, arr]) => arr.length > 0)

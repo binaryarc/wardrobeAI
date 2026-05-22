@@ -4,6 +4,7 @@
 
 import { Client } from '@notionhq/client';
 import { loadConfig } from '../server/config.js';
+import { listAllChildren, flattenBlocks } from '../server/notion/reader.js';
 
 const config = loadConfig();
 if (!config.notionToken || !config.wardrobePageId) {
@@ -13,21 +14,8 @@ if (!config.notionToken || !config.wardrobePageId) {
 
 const notion = new Client({ auth: config.notionToken });
 
-async function flatten(blocks) {
-  const result = [];
-  for (const b of blocks) {
-    if (b.type === 'column_list' || b.type === 'column') {
-      const ch = await notion.blocks.children.list({ block_id: b.id, page_size: 100 });
-      result.push(...await flatten(ch.results));
-    } else {
-      result.push(b);
-    }
-  }
-  return result;
-}
-
-const res = await notion.blocks.children.list({ block_id: config.wardrobePageId, page_size: 100 });
-const flat = await flatten(res.results);
+const topBlocks = await listAllChildren(notion, config.wardrobePageId);
+const flat = await flattenBlocks(notion, topBlocks);
 const images = flat.filter(b => b.type === 'image');
 
 console.log(`이미지 블록 ${images.length}개 발견. 캡션 초기화 시작...`);
