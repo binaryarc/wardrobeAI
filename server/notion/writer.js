@@ -78,6 +78,27 @@ export function buildOutfitBlocks(outfit, allItems, weather, index, fileUploadId
   return blocks;
 }
 
+export function buildShoppingBlocks(shopping) {
+  if (!shopping?.length) return [];
+  const blocks = [
+    { type: 'divider', divider: {} },
+    { type: 'heading_2', heading_2: { rich_text: richText('🛍 있으면 좋을 아이템') } },
+  ];
+  for (const sug of shopping) {
+    const title = [sug.name, sug.category].filter(Boolean).join(' · ');
+    const body = sug.reason ? `${title}\n${sug.reason}` : title;
+    blocks.push({
+      type: 'callout',
+      callout: {
+        rich_text: richText(body),
+        icon: { type: 'emoji', emoji: '✨' },
+        color: 'purple_background',
+      },
+    });
+  }
+  return blocks;
+}
+
 function buildShopInfoBlocks(item) {
   if (!item.shopInfo) return [];
   const info = item.shopInfo;
@@ -99,7 +120,7 @@ function buildShopInfoBlocks(item) {
   }];
 }
 
-export async function writeRecommendation({ notionToken, parentPageId, outfits, items, weather, date }) {
+export async function writeRecommendation({ notionToken, parentPageId, outfits, shopping = [], items, weather, date }) {
   const notion = new Client({ auth: notionToken });
   const dateStr = date ?? new Date().toISOString().slice(0, 10);
 
@@ -148,9 +169,12 @@ export async function writeRecommendation({ notionToken, parentPageId, outfits, 
     outfitBlocks.push(...buildOutfitBlocks(outfit, items, weather, i + 1, fileUploadIds));
   }
 
+  const shoppingBlocks = buildShoppingBlocks(shopping);
+
   const allBlocks = [
     ...(shopBlocks.length ? [{ type: 'heading_2', heading_2: { rich_text: richText('🛍 보유 상품 정보') } }, ...shopBlocks, { type: 'divider', divider: {} }] : []),
     ...outfitBlocks,
+    ...shoppingBlocks,
   ];
 
   // 이미지 블록은 따로 분리: 생성 후 즉시 caption update 필요

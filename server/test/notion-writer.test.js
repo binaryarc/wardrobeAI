@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { buildOutfitBlocks } from '../notion/writer.js';
+import { buildOutfitBlocks, buildShoppingBlocks } from '../notion/writer.js';
 
 const sampleOutfit = {
   top: '화이트 린넨 셔츠',
@@ -47,4 +47,24 @@ test('buildOutfitBlocks has no image blocks when fileUploadIds is empty', () => 
   const blocks = buildOutfitBlocks(sampleOutfit, sampleItems, sampleWeather, 1, []);
   const images = blocks.filter(b => b.type === 'image');
   assert.equal(images.length, 0);
+});
+
+test('buildShoppingBlocks returns empty for empty input', () => {
+  assert.deepEqual(buildShoppingBlocks([]), []);
+  assert.deepEqual(buildShoppingBlocks(undefined), []);
+});
+
+test('buildShoppingBlocks returns header + callout per item', () => {
+  const shopping = [
+    { name: '차콜 슬랙스', category: '하의', reason: '세미포멀 보강' },
+    { name: '베이지 자켓', category: '아우터', reason: '쌀쌀한 날 대비' },
+  ];
+  const blocks = buildShoppingBlocks(shopping);
+  const callouts = blocks.filter(b => b.type === 'callout');
+  const headings = blocks.filter(b => b.type === 'heading_2');
+  assert.equal(callouts.length, 2);
+  assert.equal(headings.length, 1);
+  const text = callouts[0].callout.rich_text.map(t => t.text.content).join('');
+  assert.match(text, /차콜 슬랙스/);
+  assert.match(text, /세미포멀/);
 });

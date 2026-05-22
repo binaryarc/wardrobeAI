@@ -1,7 +1,7 @@
 import { fetchWardrobeItems } from './notion/reader.js';
 import { fetchWeather } from './weather.js';
 import { buildPrompt } from './prompt.js';
-import { parseOutfitsFromOutput } from './ai.js';
+import { extractJSON } from './ai.js';
 import { runRecommendationAI, cleanupTmpImages } from './analyzer.js';
 import { writeRecommendation } from './notion/writer.js';
 
@@ -35,14 +35,17 @@ export async function runRecommendation(config, deps = {}, onProgress = null) {
   });
 
   const rawOutput = await _runAI(prompt);
-  const outfits = parseOutfitsFromOutput(rawOutput);
+  const parsed = extractJSON(rawOutput) ?? {};
+  const outfits = Array.isArray(parsed.outfits) ? parsed.outfits : [];
+  const shopping = Array.isArray(parsed.shopping) ? parsed.shopping : [];
 
-  emit({ step: 'writing', message: `추천 ${outfits.length}세트 노션에 작성 중...` });
+  emit({ step: 'writing', message: `추천 ${outfits.length}세트 + 보강 ${shopping.length}개 노션에 작성 중...` });
 
   const newOutputPageId = await _writeRecommendation({
     notionToken: config.notionToken,
     parentPageId: config.wardrobePageId,
     outfits,
+    shopping,
     items,
     weather,
     date: new Date().toISOString().slice(0, 10),
@@ -50,6 +53,6 @@ export async function runRecommendation(config, deps = {}, onProgress = null) {
 
   cleanupTmpImages();
 
-  emit({ step: 'done', message: `완료 — 코디 ${outfits.length}세트` });
-  return { outfits, weather, items, newOutputPageId };
+  emit({ step: 'done', message: `완료 — 코디 ${outfits.length}세트, 보강 ${shopping.length}개` });
+  return { outfits, shopping, weather, items, newOutputPageId };
 }

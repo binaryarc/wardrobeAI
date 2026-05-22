@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { parseOutfitsFromOutput } from '../ai.js';
+import { parseOutfitsFromOutput, parseShoppingFromOutput, extractJSON } from '../ai.js';
 
 test('parseOutfitsFromOutput parses valid JSON', () => {
   const raw = JSON.stringify({
@@ -23,4 +23,29 @@ test('parseOutfitsFromOutput extracts JSON from mixed output', () => {
 test('parseOutfitsFromOutput returns empty array on invalid JSON', () => {
   const result = parseOutfitsFromOutput('이건 JSON이 아닙니다');
   assert.deepEqual(result, []);
+});
+
+test('parseShoppingFromOutput parses shopping array', () => {
+  const raw = JSON.stringify({
+    outfits: [],
+    shopping: [
+      { name: '차콜 슬랙스', category: '하의', reason: '세미포멀 코디 보강' },
+      { name: '베이지 자켓', category: '아우터', reason: '쌀쌀한 날 대비' },
+    ],
+  });
+  const result = parseShoppingFromOutput(raw);
+  assert.equal(result.length, 2);
+  assert.equal(result[0].category, '하의');
+});
+
+test('parseShoppingFromOutput returns empty array when missing', () => {
+  const raw = JSON.stringify({ outfits: [] });
+  assert.deepEqual(parseShoppingFromOutput(raw), []);
+});
+
+test('extractJSON parses outfits and shopping from same response', () => {
+  const raw = JSON.stringify({ outfits: [{ top: 'A' }], shopping: [{ name: 'X' }] });
+  const parsed = extractJSON(raw);
+  assert.equal(parsed.outfits.length, 1);
+  assert.equal(parsed.shopping.length, 1);
 });

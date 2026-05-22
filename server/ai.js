@@ -18,6 +18,11 @@ export function parseOutfitsFromOutput(raw) {
   return extractJSON(raw)?.outfits ?? [];
 }
 
+export function parseShoppingFromOutput(raw) {
+  const arr = extractJSON(raw)?.shopping;
+  return Array.isArray(arr) ? arr : [];
+}
+
 // claude/codex CLI를 spawn해 prompt를 보내고 stdout을 반환.
 // options.extraArgs: claude에 추가로 넘길 인자 (예: --add-dir, --permission-mode)
 // options.swallow: true면 에러를 throw하지 않고 null 반환 (이미지 분석용)

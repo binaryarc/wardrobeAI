@@ -64,3 +64,10 @@ test('shouldIncludeOuter true at 18C threshold', () => {
   assert.equal(shouldIncludeOuter({ temperature: 19 }), false);
   assert.equal(shouldIncludeOuter(null), false);
 });
+
+test('buildPrompt requests shopping array with required fields', () => {
+  const prompt = buildPrompt(sampleItems, sampleWeather, { preferredStyles: [], excludeItems: [] });
+  assert.match(prompt, /shopping/);
+  assert.match(prompt, /보강/);
+  assert.match(prompt, /"reason"/);
+});
