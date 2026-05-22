@@ -19,9 +19,19 @@ node_modules/
 # 빌드 산출물
 *.tsbuildinfo
 
-# 로컬 설정 / 사용자 데이터
+# 로컬 설정 / 사용자 데이터 (홈 디렉토리에 저장되지만 혹시 모를 복사본 차단)
 ~/.wardrobeai/
+.wardrobeai/
+config.json
+items-cache.json
 *.log
+
+# Playwright / 진단 / 임시 산출물
+.playwright-mcp/
+.tmp/
+notion-*.png
+notion-*.jpg
+inspect-*.mjs
 
 # OS
 .DS_Store

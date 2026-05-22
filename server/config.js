@@ -13,11 +13,14 @@ const DEFAULT_CONFIG = {
   outputPageId: null,
 };
 
-export function getDefaultConfigPath() {
-  const base = process.platform === 'win32'
+export function getDataDir() {
+  return process.platform === 'win32'
     ? join(process.env.APPDATA || homedir(), 'wardrobeai')
     : join(homedir(), '.wardrobeai');
-  return join(base, 'config.json');
+}
+
+export function getDefaultConfigPath() {
+  return join(getDataDir(), 'config.json');
 }
 
 export function loadConfig(configPath = getDefaultConfigPath()) {
