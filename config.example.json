@@ -1,0 +1,10 @@
+{
+  "notionToken": "ntn_여기에_노션_인티그레이션_토큰",
+  "wardrobePageId": "옷장으로_사용할_노션_페이지_ID_32자",
+  "city": "Seoul",
+  "preferredStyles": ["미니멀", "캐주얼"],
+  "excludeItems": [],
+  "aiEngine": "claude",
+  "schedule": "0 8 * * *",
+  "outputPageId": null
+}

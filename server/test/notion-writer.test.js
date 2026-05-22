@@ -31,9 +31,20 @@ test('buildOutfitBlocks includes callout block with comment', () => {
   assert.match(text, /미니멀 캐주얼/);
 });
 
-test('buildOutfitBlocks includes image block when imageUrl present', () => {
-  const blocks = buildOutfitBlocks(sampleOutfit, sampleItems, sampleWeather, 1);
-  const image = blocks.find(b => b.type === 'image');
-  assert.ok(image);
-  assert.equal(image.image.external.url, 'https://example.com/shirt.jpg');
+test('buildOutfitBlocks includes image blocks for each fileUploadId passed', () => {
+  const fileUploadIds = [
+    { fileUploadId: 'upload-id-shirt', label: '상의 — 화이트 린넨 셔츠' },
+    { fileUploadId: 'upload-id-shoes', label: '신발 — 화이트 스니커즈' },
+  ];
+  const blocks = buildOutfitBlocks(sampleOutfit, sampleItems, sampleWeather, 1, fileUploadIds);
+  const images = blocks.filter(b => b.type === 'image');
+  assert.equal(images.length, 2);
+  assert.equal(images[0].image.file_upload.id, 'upload-id-shirt');
+  assert.equal(images[1].image.file_upload.id, 'upload-id-shoes');
+});
+
+test('buildOutfitBlocks has no image blocks when fileUploadIds is empty', () => {
+  const blocks = buildOutfitBlocks(sampleOutfit, sampleItems, sampleWeather, 1, []);
+  const images = blocks.filter(b => b.type === 'image');
+  assert.equal(images.length, 0);
 });
