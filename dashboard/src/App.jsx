@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard.jsx';
 
 export default function App() {
   const [configured, setConfigured] = useState(null);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     fetch('/api/status')
@@ -13,6 +14,7 @@ export default function App() {
   }, []);
 
   function handleReset() {
+    setEditing(true);
     setConfigured(false);
   }
 
@@ -21,6 +23,11 @@ export default function App() {
       로딩 중...
     </div>
   );
-  if (!configured) return <Setup onComplete={() => setConfigured(true)} />;
+  if (!configured) return (
+    <Setup
+      onComplete={() => { setEditing(false); setConfigured(true); }}
+      onCancel={editing ? () => { setEditing(false); setConfigured(true); } : null}
+    />
+  );
   return <Dashboard onReset={handleReset} />;
 }

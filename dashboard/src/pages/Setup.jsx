@@ -57,7 +57,7 @@ const styles = `
   .wardrobe-select option { background: #1e1b4b; color: #f1f5f9; }
 `;
 
-export default function Setup({ onComplete }) {
+export default function Setup({ onComplete, onCancel }) {
   const [form, setForm] = useState({
     notionToken: '', wardrobePageId: '', city: '',
     preferredStyles: '', excludeItems: '',
@@ -172,6 +172,15 @@ export default function Setup({ onComplete }) {
         padding: '44px 48px',
         boxShadow: '0 8px 64px rgba(0,0,0,0.5)',
       }}>
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            style={{ marginBottom: 20, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '8px 14px', color: 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+          >
+            ← 뒤로
+          </button>
+        )}
         <div style={{ marginBottom: 36, textAlign: 'center' }}>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: '#f1f5f9', margin: 0, letterSpacing: '-0.02em' }}>
             wardrobeAI 설정

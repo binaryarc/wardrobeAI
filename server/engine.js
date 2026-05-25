@@ -32,6 +32,7 @@ export async function runRecommendation(config, deps = {}, onProgress = null) {
   const prompt = buildPrompt(items, weather, {
     preferredStyles: config.preferredStyles,
     excludeItems: config.excludeItems,
+    outfitCount: config.outfitCount,
   });
 
   const rawOutput = await _runAI(prompt);

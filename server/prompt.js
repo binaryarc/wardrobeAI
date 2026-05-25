@@ -24,7 +24,7 @@ function groupByCategory(items) {
   return groups;
 }
 
-export function buildPrompt(items, weather, { preferredStyles, excludeItems }) {
+export function buildPrompt(items, weather, { preferredStyles, excludeItems, outfitCount = 3 }) {
   const filtered = items.filter(item => !excludeItems.includes(item.name));
   const grouped = groupByCategory(filtered);
 
@@ -50,7 +50,7 @@ export function buildPrompt(items, weather, { preferredStyles, excludeItems }) {
     : '';
 
   return `당신은 패션 스타일리스트입니다.
-아래 옷 목록과 날씨를 바탕으로 (1) 오늘 입기 좋은 코디 3세트와 (2) 보유 옷장을 보완할 추가 아이템 4개를 추천하세요.
+아래 옷 목록과 날씨를 바탕으로 (1) 오늘 입기 좋은 코디 ${outfitCount}세트와 (2) 보유 옷장을 보완할 추가 아이템 4개를 추천하세요.
 
 ${weatherDesc}
 ${styleDesc}
@@ -60,7 +60,7 @@ ${sections}
 
 규칙:
 - outfits: 반드시 위 목록에 있는 정확한 이름만 사용하세요. 임의로 만들어내지 마세요.
-- outfits: 세 개는 서로 겹치지 않게 다양하게 구성하세요.
+- outfits: 정확히 ${outfitCount}세트를 서로 겹치지 않게 다양하게 구성하세요.
 - outfits: 날씨와 선호 스타일에 맞는 조합을 우선하세요.${outerRule}
 - shopping: 보유 옷장의 부족한 카테고리·색상·스타일을 분석해 보강하면 코디 다양성이 늘어날 아이템 4개를 제안하세요. 이미 보유한 옷과 조합 가능성을 근거로 설명하세요.
 

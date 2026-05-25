@@ -11,6 +11,7 @@ const DEFAULT_CONFIG = {
   aiEngine: 'claude',
   schedule: '0 8 * * *',
   outputPageId: null,
+  outfitCount: 3,
 };
 
 export function getDataDir() {

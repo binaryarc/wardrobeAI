@@ -75,6 +75,7 @@ export default function Dashboard({ onReset }) {
   const [scheduleEdit, setScheduleEdit] = useState('');
   const [scheduleSaving, setScheduleSaving] = useState(false);
   const [progress, setProgress] = useState(null);
+  const [outfitCount, setOutfitCount] = useState(3);
   const sseRef = useRef(null);
 
   const refresh = useCallback(async () => {
@@ -122,6 +123,13 @@ export default function Dashboard({ onReset }) {
     return () => clearInterval(id);
   }, [refresh]);
 
+  useEffect(() => {
+    fetch('/api/config')
+      .then(r => r.json())
+      .then(cfg => { if (typeof cfg.outfitCount === 'number') setOutfitCount(cfg.outfitCount); })
+      .catch(() => {});
+  }, []);
+
   async function handleRun() {
     setRunning(true);
     setProgress({ step: 'start', message: '시작 중...' });
@@ -134,6 +142,17 @@ export default function Dashboard({ onReset }) {
       setRunning(false);
       setProgress(null);
     }
+  }
+
+  async function saveOutfitCount(n) {
+    setOutfitCount(n);
+    try {
+      await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ outfitCount: n }),
+      });
+    } catch {}
   }
 
   async function handleScheduleSave() {
@@ -180,6 +199,29 @@ export default function Dashboard({ onReset }) {
         </div>
 
         <StatusCard lastRun={status.lastRun} schedule={status.schedule} running={status.running} />
+
+        <div style={{ marginTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>추천받을 코디 개수</span>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {[1, 2, 3, 4, 5].map(n => (
+              <button
+                key={n}
+                onClick={() => saveOutfitCount(n)}
+                disabled={isRunning}
+                style={{
+                  width: 38, height: 38, borderRadius: 10, fontSize: 15, fontWeight: 700,
+                  cursor: isRunning ? 'not-allowed' : 'pointer',
+                  border: outfitCount === n ? '1px solid rgba(167,139,250,0.6)' : '1px solid rgba(255,255,255,0.1)',
+                  background: outfitCount === n ? 'rgba(167,139,250,0.2)' : 'rgba(255,255,255,0.04)',
+                  color: outfitCount === n ? '#c4b5fd' : 'rgba(255,255,255,0.5)',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <button
           onClick={handleRun}

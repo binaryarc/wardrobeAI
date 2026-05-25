@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { execFile } from 'node:child_process';
+import open from 'open';
 import { loadConfig, saveConfig } from '../config.js';
 import { runRecommendation } from '../engine.js';
 import { startScheduler } from '../scheduler.js';
@@ -30,7 +31,7 @@ function addLog(level, message) {
   broadcast({ type: 'log', level, message });
 }
 
-async function executeRecommendation() {
+async function executeRecommendation({ openResult = false } = {}) {
   if (state.running) return;
   state.running = true;
   state.progress = null;
@@ -45,6 +46,11 @@ async function executeRecommendation() {
     });
     state.lastRun = new Date().toISOString();
     addLog('success', `추천 완료 — 코디 ${result.outfits.length}세트 노션에 작성됨`);
+
+    if (openResult && result.newOutputPageId) {
+      const pageUrl = `https://www.notion.so/${result.newOutputPageId.replace(/-/g, '')}`;
+      open(pageUrl).catch(() => addLog('info', `브라우저에서 열기: ${pageUrl}`));
+    }
   } catch (err) {
     addLog('error', err.message);
   } finally {
@@ -105,7 +111,7 @@ router.post('/config', (req, res) => {
 
 router.post('/run', async (req, res) => {
   res.json({ ok: true, message: '추천 실행 시작' });
-  executeRecommendation();
+  executeRecommendation({ openResult: true });
 });
 
 router.get('/check-ai', (req, res) => {
